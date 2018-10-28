@@ -24,16 +24,19 @@ public class SignUp extends AppCompatActivity implements View.OnClickListener {
     private EditText edtName;
     private EditText edtKickSpd;
     private EditText edtKickPwr;
-    private String data;
+    private Button transition;
     private TextView txtGetData;
     private Button getAllData;
+    private StringBuilder data;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
+        data = new StringBuilder();
         getAllData = findViewById(R.id.btnGetAll);
         btnSave = findViewById(R.id.btnSubmit);
+        transition = findViewById(R.id.btnNextActivity);
         edtName = findViewById(R.id.edtName);
         edtKickPwr = findViewById(R.id.edtKickPwr);
         edtKickSpd = findViewById(R.id.edtkickSpd);
@@ -42,8 +45,9 @@ public class SignUp extends AppCompatActivity implements View.OnClickListener {
         getAllData.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                data = "";
                 final ParseQuery<ParseObject> queryAll = ParseQuery.getQuery("KickBoxer");
+
+                queryAll.whereLessThan("punch_speed",200);
                 queryAll.findInBackground(new FindCallback<ParseObject>() {
                     @Override
                     public void done(List<ParseObject> objects, ParseException e) {
@@ -51,7 +55,8 @@ public class SignUp extends AppCompatActivity implements View.OnClickListener {
                             if(objects.size()>0){
                                 FancyToast.makeText(SignUp.this,"Success",FancyToast.LENGTH_LONG,FancyToast.SUCCESS,false).show();
                                 for (int i =0;i<objects.size();i++){
-                                    data+= objects.get(i).get("name") + ";" + objects.get(i).get("punch_power");
+                                    data.append(objects.get(i).get("name"));
+                                    data.append( objects.get(i).get("punch_power"));
                                 }
                             }
                         }else{
@@ -77,6 +82,12 @@ public class SignUp extends AppCompatActivity implements View.OnClickListener {
 
             }
             });
+        transition.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+            }
+        });
     }
 
     @Override
